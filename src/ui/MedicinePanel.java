@@ -27,7 +27,7 @@ public class MedicinePanel extends JPanel {
     private JTextField txtPrice;
     private JTextField txtQuantity;
     private JTextField txtReorderLevel;
-    private JTextField txtExpiryDate; // Format: yyyy-MM-dd
+    private JTextField txtExpiryDate;
     private JComboBox<Supplier> cmbSupplier;
 
     private JTable tblMedicines;
@@ -122,7 +122,7 @@ public class MedicinePanel extends JPanel {
         gbc.gridx = 1;
         formFields.add(cmbSupplier, gbc);
 
-        // Buttons Panel
+        // Action Buttons
         JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 8, 8));
         btnAdd = new JButton("Add Medicine");
         btnUpdate = new JButton("Update");
@@ -157,17 +157,17 @@ public class MedicinePanel extends JPanel {
         JScrollPane tableScroll = new JScrollPane(tblMedicines);
         tableScroll.setBorder(BorderFactory.createTitledBorder("Medicine Inventory"));
 
-        // Assemble Panels
+        // Layout Assembly
         add(formContainer, BorderLayout.WEST);
         add(tableScroll, BorderLayout.CENTER);
 
-        // --- Event Listeners ---
+        // Event Listeners
         btnAdd.addActionListener(e -> handleAddMedicine());
         btnUpdate.addActionListener(e -> handleUpdateMedicine());
         btnDelete.addActionListener(e -> handleDeleteMedicine());
         btnClear.addActionListener(e -> clearForm());
 
-tblMedicines.addMouseListener(new MouseAdapter() {
+            tblMedicines.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int viewRow = tblMedicines.getSelectedRow();
