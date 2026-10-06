@@ -1,6 +1,7 @@
 package ui;
 
 import dao.MedicineDAO;
+import dao.SaleDAO;
 import model.Medicine;
 import model.SaleItem;
 import model.User;
@@ -207,7 +208,7 @@ public class CashierDashboard extends JFrame {
         btnAddToCart.addActionListener(e -> handleAddToCart());
         btnRemoveItem.addActionListener(e -> handleRemoveSelectedItem());
         btnClearCart.addActionListener(e -> handleClearCart());
-        btnCheckout.addActionListener(e -> handleCheckoutStub());
+        btnCheckout.addActionListener(e -> handleCheckout());
 
         // Instant Live Search Filter Listener
         txtSearch.getDocument().addDocumentListener(new DocumentListener() {
@@ -336,16 +337,79 @@ public class CashierDashboard extends JFrame {
         lblTotalAmount.setText(String.format(java.util.Locale.US,"Total: R %.2f", total));
     }
 
-    private void handleCheckoutStub() {
-        if (cartItems.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "The cart is empty. Add items before proceeding to checkout.", "Empty Cart", JOptionPane.WARNING_MESSAGE);
+    private void handleCheckout() {
+    if (cartItems.isEmpty()) {
+        JOptionPane.showMessageDialog(this,
+            "The cart is currently empty. Please add items before checking out.",
+            "Empty Cart",
+            JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    // Compute final cart total
+    double grandTotal = 0.0;
+    for (SaleItem item : cartItems) {
+        grandTotal += item.getSubtotal();
+    }
+
+    // Prompt Cashier for customer payment amount
+    String input = JOptionPane.showInputDialog(
+        this,
+        String.format("Total Due: R %.2f\nEnter cash amount paid by customer:", grandTotal),
+        "Payment Processing",
+        JOptionPane.QUESTION_MESSAGE
+    );
+
+    if (input == null) {
+        return; // Checkout cancelled
+    }
+
+    double cashPaid;
+    try {
+        cashPaid = Double.parseDouble(input.trim());
+        if (cashPaid < grandTotal) {
+            JOptionPane.showMessageDialog(this,
+                String.format("Insufficient payment. Amount due: R %.2f | Tendered: R %.2f", grandTotal, cashPaid),
+                "Payment Error",
+                JOptionPane.ERROR_MESSAGE);
             return;
         }
-        JOptionPane.showMessageDialog(this,
-            "Cart is ready for checkout (" + cartItems.size() + " items).\nProceeding to Commit 9 for database transaction & bill generation.",
-            "Checkout Verification",
-            JOptionPane.INFORMATION_MESSAGE);
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, "Please enter a valid monetary amount.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+        return;
     }
+
+    try {
+        // Create Sale header record
+        int currentUserId = (currentUser != null) ? currentUser.getUserId() : 1;
+        model.Sale sale = new model.Sale(grandTotal, currentUserId);
+
+        // Execute atomic database transaction
+        int generatedSaleId = saleDAO.processSale(sale, cartItems);
+
+        // Display Generated Bill Dialog
+        BillDialog bill = new BillDialog(
+            this,
+            generatedSaleId,
+            (currentUser != null) ? currentUser.getFullName() : "Cashier",
+            new ArrayList<>(cartItems),
+            grandTotal,
+            cashPaid
+        );
+        bill.setVisible(true);
+
+        // Clear current cart and refresh inventory table to display updated stock
+        cartItems.clear();
+        refreshCartTable();
+        loadInventoryData();
+
+    } catch (java.sql.SQLException ex) {
+        JOptionPane.showMessageDialog(this,
+            "Transaction failed and database changes were rolled back:\n" + ex.getMessage(),
+            "Checkout Transaction Error",
+            JOptionPane.ERROR_MESSAGE);
+    }
+}
 
     private void handleLogout() {
         int confirm = JOptionPane.showConfirmDialog(
@@ -365,4 +429,5 @@ public class CashierDashboard extends JFrame {
     public List<SaleItem> getCartItems() { return cartItems; }
     public User getCurrentUser() { return currentUser; }
     public JButton getBtnCheckout() { return btnCheckout; }
+    private final SaleDAO saleDAO = new SaleDAO();
 }
