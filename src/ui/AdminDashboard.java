@@ -80,7 +80,7 @@ public class AdminDashboard extends JFrame {
         medicinesPanel = new MedicinePanel();
         suppliersPanel = new SupplierPanel();
         usersPanel = new UserPanel();
-        reportsPanel = createPlaceholderPanel("Analytical Reports Module");
+        reportsPanel = new ReportPanel();
 
         // The 4 mandatory tabs
         tabbedPane.addTab("Manage Medicines", medicinesPanel);
