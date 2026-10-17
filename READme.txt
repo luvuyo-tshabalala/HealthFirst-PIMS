@@ -195,21 +195,3 @@
        The report only lists medicines expiring within the next month.
        Add or edit a medicine with a nearby expiry date to see results.
 
-
- 9. REFERENCES
-------------------------------------------------------------------------------
-   Oracle (n.d.) The Java Tutorials: Creating a GUI With Swing. Available at:
-       https://docs.oracle.com/javase/tutorial/uiswing/TOC.html
-
-   Oracle (n.d.) The Java Tutorials: JDBC Database Access. Available at:
-       https://docs.oracle.com/javase/tutorial/jdbc/basics/gettingstarted.html
-
-   MySQL (n.d.) MySQL Workbench Manual. Available at:
-       https://dev.mysql.com/doc/workbench/en/
-
-   Apache NetBeans (n.d.) Designing a Swing GUI in NetBeans IDE. Available at:
-       https://netbeans.apache.org/tutorial/main/kb/docs/java/quickstart-gui/
-
-   GitHub (n.d.) Quickstart for repositories. Available at:
-       https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories
-
