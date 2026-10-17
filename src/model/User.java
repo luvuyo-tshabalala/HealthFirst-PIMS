@@ -25,11 +25,11 @@ public User(String username, String password, String role, String fullName) {
         this.fullName = fullName;
 }
 
-    public int getuserId(){
+    public int getUserId(){
         return userId;
     }
     
-    public void setUserID(int userID){
+    public void setUserId(int userID){
         this.userId = userID;
     }
 
@@ -64,5 +64,6 @@ public User(String username, String password, String role, String fullName) {
     public void setFullName(String fullName){
         this.fullName = fullName;
     }
+
 
 }

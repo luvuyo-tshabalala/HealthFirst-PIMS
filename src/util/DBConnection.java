@@ -8,7 +8,7 @@ public class DBConnection {
 
     private static final String URL = "jdbc:mysql://localhost:3306/healthfirst_pims?useSSL=false&serverTimezone=UTC";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "Admin#2025"; // Ensure this matches your local MySQL password
+    private static final String PASSWORD = "Admin#2025";
 
     private static Connection connection = null;
 
